@@ -3,8 +3,11 @@ import { webhookCallback } from 'grammy'
 import { Hono } from 'hono'
 import { bot } from './telegramBot.js'
 import { run } from '@grammyjs/runner'
+import { cors } from 'hono/cors'
+import { setupUserWalletArgs } from './db/repository.js'
 
 const app = new Hono()
+app.use('/*', cors())
 
 // app.post('/webhook', webhookCallback(bot, 'hono'))
 
@@ -12,8 +15,17 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.patch('/update-user', (c) => {
-  return c.json({ success: true })
+// app.patch('/update-user', async (c) => {
+//   console.log(await c.req.json())
+//   return c.json({})
+// })
+
+app.post('/setup-wallet', async (c) => {
+  const body = await c.req.json()
+
+  const res = setupUserWalletArgs(body)
+
+  return c.json(res)
 })
 
 const port = 3000

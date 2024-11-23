@@ -3,7 +3,8 @@ import "dotenv/config"
 
 const zodEnv = z.object({
     DATABASE_URL: z.string(),
-    TELEGRAM_BOT_TOKEN: z.string()
+    TELEGRAM_BOT_TOKEN: z.string(),
+    TELEGRAM_MINI_APP_URL: z.string()
 });
 
 const getEnv = (): TypeOf<typeof zodEnv> => {

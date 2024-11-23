@@ -10,7 +10,7 @@ const timestamps = {
 
 export const profilesTable = pgTable("profiles", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: integer().notNull(),
+    userId: integer().unique().notNull(),
     firstName: text(),
     lastName: text(),
     username: text(),

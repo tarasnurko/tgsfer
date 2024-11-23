@@ -11,13 +11,13 @@ export const findUserById = async (id: number) => {
 export type BaseUser = Pick<InsertProfile, "userId" | "username" | "firstName" | "lastName">
 
 export const createBaseUser = async (data: BaseUser) => {
-    return db.insert(schema.profilesTable).values(data).returning()
+    return db.insert(schema.profilesTable).values(data).onConflictDoNothing().returning()
 }
 
 export type SetupUserWalletArgs = Pick<SelectProfile, "id" | "walletAddress">
 
 export const setupUserWalletArgs = async (data: SetupUserWalletArgs) => {
-    return db.update(schema.profilesTable).set({ walletAddress: data.walletAddress }).where(eq(schema.profilesTable.id, data.id)).returning()
+    return db.update(schema.profilesTable).set({ walletAddress: data.walletAddress }).where(eq(schema.profilesTable.userId, data.id)).returning()
 }
 
 export const getUserProfileByUsername = async (username: string) => {
