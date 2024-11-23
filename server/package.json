@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@grammyjs/runner": "^2.0.3",
+    "@hono/node-server": "^1.13.7",
+    "dotenv": "^16.4.5",
+    "grammy": "^1.32.0",
+    "hono": "^4.6.11",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1"
+  }
+}
