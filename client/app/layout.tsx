@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import { RootProvider } from "@/components/providers/root-provider";
+import ContextProvider from "@/components/providers/provider";
+import { headers } from 'next/headers'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,13 +27,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookies = headers().get('cookie')
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <RootProvider>
-          {children}
+          <ContextProvider cookies={cookies}>
+            {children}
+          </ContextProvider>
         </RootProvider>
       </body>
     </html>

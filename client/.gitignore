@@ -9,7 +9,7 @@
 # testing
 /coverage
 
-.evn
+.env
 
 # next.js
 /.next/
