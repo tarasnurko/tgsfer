@@ -51,6 +51,6 @@ export const getPaginatedUserSignedWithdrawals = async ({ userId, page, pageSize
     return data;
 }
 
-export const deleteSignedMessage = async (id: number) => {
+export const deleteSignedWithdrawal = async (id: number) => {
     db.delete(schema.signedWithdrawalsTable).where(eq(schema.signedWithdrawalsTable.id, id))
 }

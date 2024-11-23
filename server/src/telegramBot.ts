@@ -35,7 +35,7 @@ bot.command('signatures', async (ctx) => {
     const [signedWithdrawal] = await getPaginatedUserSignedWithdrawals({ userId, page: 0, pageSize: 1 })
 
     const keyboard = new InlineKeyboard()
-        .text('Delete', `delete_withdrawal:${signedWithdrawal.id}`).text('Next', `withdrawals?page=${1}`)
+        .text('Next', `withdrawals?page=${1}`)
 
     const formattedSignedWithdrawal = formatSignedWithdrawal(signedWithdrawal)
 
@@ -44,9 +44,42 @@ bot.command('signatures', async (ctx) => {
     });
 })
 
-// bot.command('help', (ctx) => {
-//     ctx.reply('Use /start to start the bot and /help to see this message.');
-// });
+
+bot.on('callback_query:data', async (ctx) => {
+    const callbackData = ctx.callbackQuery.data;
+
+    const userId = ctx.from?.id;
+    if (!userId) {
+        return
+    }
+
+    if (callbackData.includes("withdrawals")) {
+        const page = new URL(callbackData).searchParams.get('page');
+
+        if (page === null) {
+            return
+        }
+
+        const parsedPage = Number(page)
+
+        const [signedWithdrawal] = await getPaginatedUserSignedWithdrawals({ userId, page: parsedPage + 1, pageSize: 1 })
+
+        let keyboard = new InlineKeyboard()
+
+
+        if (parsedPage > 0) {
+            keyboard = keyboard.text("Prev", `withdrawals?page=${parsedPage - 1}`)
+        }
+
+        keyboard = keyboard.text('Next', `withdrawals?page=${parsedPage + 1}`)
+
+        const formattedSignedWithdrawal = formatSignedWithdrawal(signedWithdrawal)
+
+        await ctx.reply(formattedSignedWithdrawal, {
+            reply_markup: keyboard
+        });
+    }
+});
 
 
 export { bot }
