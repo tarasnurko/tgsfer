@@ -1,7 +1,7 @@
-import { Bot } from 'grammy'
+import { Bot, InlineKeyboard } from 'grammy'
 import { env } from './env.js';
-import { createBaseUser } from './db/repository.js'
-import { sendBotStartMessage } from './helpers.js';
+import { createBaseUser, findProfileById, getPaginatedUserSignedWithdrawals } from './db/repository.js'
+import { formatSignedWithdrawal, sendBotStartMessage } from './helpers.js';
 
 const bot = new Bot(env.TELEGRAM_BOT_TOKEN)
 
@@ -13,22 +13,40 @@ bot.command('start', async (ctx) => {
         return
     }
 
-    await createBaseUser({ userId, username: ctx.from?.username, firstName: ctx.from?.first_name, lastName: ctx.from?.last_name });
+    await createBaseUser({ userId, chatId: ctx.chatId, username: ctx.from?.username, firstName: ctx.from?.first_name, lastName: ctx.from?.last_name });
 
     await sendBotStartMessage(ctx)
 });
 
 bot.command('setup-wallet', async (ctx) => {
+    const userId = ctx.from?.id;
+    if (!userId) {
+        return
+    }
     await sendBotStartMessage(ctx)
 })
 
-bot.command('help', (ctx) => {
-    ctx.reply('Use /start to start the bot and /help to see this message.');
-});
+bot.command('signatures', async (ctx) => {
+    const userId = ctx.from?.id;
+    if (!userId) {
+        return
+    }
 
-// // Echo handler for any text message
-// bot.on('message:text', (ctx) => {
-//     ctx.reply(`You said: ${ctx.message.text}`);
+    const [signedWithdrawal] = await getPaginatedUserSignedWithdrawals({ userId, page: 0, pageSize: 1 })
+
+    const keyboard = new InlineKeyboard()
+        .text('Delete', `delete_withdrawal:${signedWithdrawal.id}`).text('Next', `withdrawals?page=${1}`)
+
+    const formattedSignedWithdrawal = formatSignedWithdrawal(signedWithdrawal)
+
+    await ctx.reply(formattedSignedWithdrawal, {
+        reply_markup: keyboard
+    });
+})
+
+// bot.command('help', (ctx) => {
+//     ctx.reply('Use /start to start the bot and /help to see this message.');
 // });
+
 
 export { bot }

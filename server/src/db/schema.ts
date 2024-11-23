@@ -11,6 +11,7 @@ const timestamps = {
 export const profilesTable = pgTable("profiles", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     userId: integer().unique().notNull(),
+    chatId: integer().notNull(),
     firstName: text(),
     lastName: text(),
     username: text(),
@@ -20,14 +21,14 @@ export const profilesTable = pgTable("profiles", {
 
 export const signedWithdrawalsTable = pgTable("signed_withdrawals", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    from: text(),
-    to: text(),
-    token: text(),
-    unlockWithdrawalTime: numeric(),
-    deadline: numeric(),
-    withdrawAmount: text(),
-    salt: text(),
-    inputProof: text(),
-    signature: text(),
+    from: integer().references(() => profilesTable.id).notNull(),
+    to: integer().references(() => profilesTable.id).notNull(),
+    token: text().notNull(),
+    unlockWithdrawalTime: timestamp(),
+    deadline: timestamp().notNull(),
+    withdrawAmount: text().notNull(),
+    salt: text().notNull(),
+    inputProof: text().notNull(),
+    signature: text().notNull(),
     ...timestamps,
 })
