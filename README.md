@@ -42,6 +42,12 @@ There is 2 clients - telegram bot and telegram mini app. Telegram mini app is ne
 
 [Diagram](./Diagram.png)
 
+## Contract Deployment
+Vault address: 0x6B173c94002eB298870A313f44F3865B97b3792f
+http://46.101.206.70/address/0x6B173c94002eB298870A313f44F3865B97b3792f
+
+Can not verify contract. Tried json and contracts multipart but both loaded indefinitely.
+
 # Guide for user
 
 

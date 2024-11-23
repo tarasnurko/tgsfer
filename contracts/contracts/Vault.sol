@@ -10,8 +10,7 @@ import "./fhevm/lib/TFHE.sol";
 import "./interfaces/IEncryptedERC20.sol";
 
 /**
- * @notice Contrqacts to manage anonyous delayed transfers
- * @
+ * @title Contrqacts to manage anonyous delayed transfers using EIP712
  */
 contract Vault is EIP712 {
     // ERRORS
@@ -62,8 +61,24 @@ contract Vault is EIP712 {
             TFHE.asEuint64(encryptedDeposit, inputProof)
         );
         deposits[msg.sender][token] = newBalance;
+
+        TFHE.allow(newBalance, address(this));
+        TFHE.allow(newBalance, msg.sender);
+        TFHE.allow(newBalance, token);
     }
 
+    /**
+     * @notice funciton that is responsible for withdrawal by recepient.
+     * @param from signature signer
+     * @param to recepient
+     * @param token token that recepent allowed to withdraw
+     * @param unlockWithdrawalTime time before which recepient can not withdraw funds. If 0 then ignored. Can be used for example to make weekly peyments or as salary, etc.
+     * @param deadline time after which withdrawal is not posible and signature become useless
+     * @param withdrawAmount encypted amount of tokens that recepient allowed to withdraw
+     * @param salt unique salt, mainly used to cancel signature if it's needed. It's used instead of nonces because we allow to create ultiple signatures for sigle or multiple persons.
+     * @param inputProof inputProof
+     * @param signature depositor signed withdrawal signature
+    */
     function withdraw(
         address from,
         address to,
@@ -166,5 +181,9 @@ contract Vault is EIP712 {
         );
 
         deposits[from][token] = newBalance;
+
+        TFHE.allow(newBalance, address(this));
+        TFHE.allow(newBalance, from);
+        TFHE.allow(newBalance, token);
     }
 }
