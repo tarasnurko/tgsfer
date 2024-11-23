@@ -2,7 +2,7 @@ import { z, type TypeOf } from "zod";
 import "dotenv/config"
 
 const zodEnv = z.object({
-    // DATABASE_URL: z.string(),
+    DATABASE_URL: z.string(),
     TELEGRAM_BOT_TOKEN: z.string()
 });
 
