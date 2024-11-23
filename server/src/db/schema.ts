@@ -1,5 +1,11 @@
 import { integer, numeric, pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { timestamps } from "./helpers.js";
+
+import { timestamp } from "drizzle-orm/pg-core";
+
+const timestamps = {
+    updatedAt: timestamp(),
+    createdAt: timestamp().defaultNow().notNull(),
+}
 
 
 export const profilesTable = pgTable("profiles", {
