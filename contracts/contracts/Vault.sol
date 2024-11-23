@@ -28,8 +28,10 @@ contract Vault is EIP712 {
     error SaltAlreadyUsed();
 
     // CONSTANTS
-    bytes32 constant WITHDRAW_TYPEHASH =
-        keccak256("Withdraw(string name,address wallet)");
+    bytes32 public constant WITHDRAW_TYPEHASH =
+        keccak256(
+            "Withdraw(address from,address to,address token,uint48 unlockWithdrawalTime,uint48 deadline,bytes32 withdrawAmount,bytes32 salt"
+        );
 
     // STORAGE
     mapping(address owner => mapping(address token => euint64 balance))
@@ -137,8 +139,11 @@ contract Vault is EIP712 {
         );
     }
 
-    // INTERNAL FUNCTIONS
+    function cancel(bytes32 salt) external {
+        canceledSalt[msg.sender][salt] = true;
+    }
 
+    // INTERNAL FUNCTIONS
     function _transferTokensTo(
         address from,
         address to,
